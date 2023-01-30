@@ -1,0 +1,100 @@
+---
+title: "Proteomic Data Report"
+author: "Janis Neumann"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    theme:
+      version: 4
+      bootswatch: flatly
+    toc: true
+    toc_float: TRUE
+---
+
+
+```{r echo=FALSE, include=FALSE}
+library(ggplot2)
+library(viridis)
+library(knitr)
+library(kableExtra)
+library(disgenet2r)
+```
+
+---
+
+### Initial Analysis
+
+Tab. 1. Differential expression significance (adj. p-value <= 0.05) and regulation (log fold change <= -1 or >= 1).
+
+```{r echo=FALSE}
+knitr::kable(tibble::tibble(report_input$ia_table)) %>%
+  kableExtra::kable_styling(full_width = FALSE, position = "left")
+```
+
+```{r echo=FALSE, include=FALSE}
+ia_volcano_plot <- ggplot(data = report_input$ia_volcano_data, aes(x = logFC, y = -log10(adj.pValue), col = Regulation, shape = Significant)) +
+  geom_point() +
+  theme_bw() +
+  scale_shape_manual(values = c(1, 16)) +
+  scale_color_manual(values = c("black", "firebrick3", "cyan3")) +
+  geom_vline(xintercept = c(-report_input$FC_threshold, report_input$FC_threshold)) +
+  geom_hline(yintercept = -log10(report_input$padjust_threshold))
+```
+
+Fig. 1. Volcano plot of adjusted p-value (-log10) against expression log fold change.
+
+```{r echo=FALSE, fig.asp=0.8}
+ia_volcano_plot
+```
+
+
+### Retained Genes/Proteins
+
+Tab. 2. Genes/proteins that were retained after filtering (adj. p-value <= 0.05 & abs. log FC >= 1)
+
+```{r echo=FALSE}
+knitr::kable(tibble::tibble(report_input$data_retained)) %>%
+  kableExtra::kable_styling(full_width = FALSE, position = "left")
+```
+
+
+### Gene-Disease Association
+
+Fig. 2. Gene-disease association network according to DisGeNet.
+Associations were filtered to retain only those with a score of 0.6 or higher,
+indicating 2 or more curated sources.
+
+```{r echo=FALSE, fig.asp=1}
+disgenet2r::plot(report_input$g2d_data, class = "Network", prop = 20)
+```
+
+Fig. 3. Gene-disease association heat map according to DisGeNet.
+Associations were filtered as detailed above.
+
+```{r echo=FALSE, fig.asp=1, message=FALSE}
+disgenet2r::plot(report_input$g2d_data, class = "DiseaseClass", prop = 3)
+```
+
+
+### Reactome Pathway Enrichment
+
+```{r echo=FALSE, include=FALSE}
+rpe_plot <- enrichplot::dotplot(report_input$rpe_results, showCategory = 30)
+```
+
+Fig. 4. Overview of Reactome pathway enrichment analysis, showing adjusted p-value as an enrichment score
+and gene count as dot size.
+
+```{r echo=FALSE, fig.asp=1.1}
+rpe_plot
+```
+
+```{r echo=FALSE, include=FALSE}
+rpe_cnet <- enrichplot::cnetplot(report_input$rpe_results, categorySize = "pvalue")
+```
+
+Fig. 5. Gene-Pathway network plot.
+
+```{r echo=FALSE, fig.asp=1.1}
+rpe_cnet
+```
