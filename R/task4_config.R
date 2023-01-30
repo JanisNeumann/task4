@@ -4,8 +4,8 @@
 run_name <- "example_run"
 
 # This is unfortunately needed for the DisGeNet2R package.
-disgenet2_email <- "janis.neumann@rub.de"
-disgenet2_password <- "ZNXPi9BPa88QCFv"
+disgenet2_email <- "address@url"
+disgenet2_password <- "password"
 
 # Sets the data to use, defaulting to example data that comes with the repository.
 gene_data <- "data/example_data.csv"
