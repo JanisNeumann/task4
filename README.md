@@ -16,9 +16,10 @@ There is an example data set taken from Quirós et al. 2017, used by default.
 
 ## Workflow
 
-1. Source R/task4dependencies.R
-2. Review task4_config.R, specifically input your DisGeNet2 account details (email & password), and source the script.
-3. Review the created HTML file in the reports subdirectory.
+1. Ensure the repository is the working directory.
+2. Source R/task4dependencies.R
+3. Review R/task4_config.R, specifically input your DisGeNet2 account details (email & password), and source the script.
+4. Review the created HTML file in the reports subdirectory.
 
 ## Limitations & Opportunities
 
